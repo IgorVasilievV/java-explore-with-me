@@ -9,4 +9,9 @@ public class MainApp {
         SpringApplication.run(MainApp.class);
     }
 
+    /*
+    * 1 дописать удаление категорий (валидация связных событий)
+    * 2
+    * */
+
 }

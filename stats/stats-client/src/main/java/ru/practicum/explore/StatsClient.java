@@ -1,6 +1,7 @@
 package ru.practicum.explore;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StatsClient {
 
     private final RestTemplate restTemplate;
