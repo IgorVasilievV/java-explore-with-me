@@ -1,4 +1,4 @@
-package ru.practicum.explore.service.location;
+package ru.practicum.explore.service.event;
 
 import ru.practicum.explore.model.location.Location;
 import ru.practicum.explore.model.location.dto.LocationDto;

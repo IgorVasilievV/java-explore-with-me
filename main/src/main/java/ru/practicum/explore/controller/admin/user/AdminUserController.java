@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.model.user.dto.UserDtoOut;
 import ru.practicum.explore.model.user.dto.UserDtoIn;
-import ru.practicum.explore.model.user.dto.UserDtoOut;
 import ru.practicum.explore.service.user.UserService;
 
 import javax.validation.Valid;
@@ -25,6 +24,7 @@ public class AdminUserController {
     }
 
     @GetMapping
+    @ResponseStatus(value = HttpStatus.OK)
     public List<UserDtoOut> getUsers(@RequestParam(required = false) Long[] ids,
                                      @RequestParam(required = false, defaultValue = "0") Integer from,
                                      @RequestParam(required = false, defaultValue = "10") Integer size) {
@@ -33,7 +33,7 @@ public class AdminUserController {
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void patchCategory(@PathVariable Long userId) {
+    public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
 

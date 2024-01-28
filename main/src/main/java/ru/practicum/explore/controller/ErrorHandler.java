@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore.model.exception.ApiError;
 import ru.practicum.explore.model.exception.NotFoundException;
+import ru.practicum.explore.model.exception.RequestConflictException;
 import ru.practicum.explore.model.exception.ValidationException;
 
 import java.time.LocalDateTime;
@@ -21,9 +22,9 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ApiError handle(MethodArgumentNotValidException e) {
-        log.info("Exception! Valid error.");
+        log.info("Exception! Incorrectly made request.");
         e.printStackTrace();
-        return new ApiError(e.getMessage(), "Valid error.", HttpStatus.BAD_REQUEST.toString(), convertDateTime());
+        return new ApiError(e.getMessage(), "Incorrectly made request.", HttpStatus.BAD_REQUEST.toString(), convertDateTime());
     }
 
     @ExceptionHandler
@@ -52,6 +53,17 @@ public class ErrorHandler {
         return new ApiError(e.getMessage(), "Integrity constraint has been violated.",
                 HttpStatus.CONFLICT.toString(), convertDateTime());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ApiError handle(RequestConflictException e) {
+        log.info("For the requested operation the conditions are not met.");
+        e.printStackTrace();
+        return new ApiError(e.getMessage(), "For the requested operation the conditions are not met.",
+                HttpStatus.CONFLICT.toString(), convertDateTime());
+    }
+
+
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)

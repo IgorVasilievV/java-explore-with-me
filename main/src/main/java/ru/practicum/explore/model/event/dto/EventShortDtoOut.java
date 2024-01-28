@@ -1,5 +1,6 @@
 package ru.practicum.explore.model.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import ru.practicum.explore.model.user.dto.UserDtoShortOut;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EventShortDtoOut {
 
     private String annotation;

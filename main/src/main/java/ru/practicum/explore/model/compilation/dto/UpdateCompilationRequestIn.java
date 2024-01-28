@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explore.model.event.Event;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
 
@@ -12,8 +12,12 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompilationDtoIn {
-    private List<Event> events;
+public class UpdateCompilationRequestIn {
+
+    private List<Long> events;
+
     private Boolean pinned;
+
+    @Length(min = 1, max = 50)
     private String title;
 }

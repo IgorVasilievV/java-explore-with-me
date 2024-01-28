@@ -2,20 +2,17 @@ package ru.practicum.explore.service.event;
 
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
-import ru.practicum.explore.model.event.dto.EventFullDtoOut;
-import ru.practicum.explore.model.event.dto.EventShortDtoOut;
-import ru.practicum.explore.model.event.dto.NewEventDtoIn;
+import ru.practicum.explore.model.event.dto.*;
 import ru.practicum.explore.model.location.Location;
 import ru.practicum.explore.model.user.User;
 import ru.practicum.explore.service.category.CategoryMapper;
-import ru.practicum.explore.service.location.LocationMapper;
 import ru.practicum.explore.service.user.UserMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EventMapper {
-    public static EventFullDtoOut toEventFullDto(Event event, Integer views) {
+    public static EventFullDtoOut toEventFullDto(Event event) {
         return EventFullDtoOut.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDtoOut(event.getCategory()))
@@ -28,14 +25,16 @@ public class EventMapper {
                 .location(LocationMapper.toLocationDto(event.getLocation()))
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
-                .publishedOn(event.getPublishedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .publishedOn(event.getPublishedOn() != null ?
+                        event.getPublishedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null)
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
-                .views(views).build();
+                .views(event.getViews())
+                .build();
     }
 
-    public static EventShortDtoOut toEventShortDto(Event event, Integer views) {
+    public static EventShortDtoOut toEventShortDto(Event event) {
         return EventShortDtoOut.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDtoOut(event.getCategory()))
@@ -45,22 +44,55 @@ public class EventMapper {
                 .initiator(UserMapper.toUserDtoShortOut(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(views).build();
+                .views(event.getViews())
+                .build();
     }
 
-    public static Event toEvent(NewEventDtoIn newEventDtoIn, Category category, Location location, User user) {
+    public static Event toEvent(NewEventDtoIn eventDtoIn, Category category, Location location, User user) {
         return Event.builder()
-                .annotation(newEventDtoIn.getAnnotation())
+                .annotation(eventDtoIn.getAnnotation())
                 .category(category)
-                .description(newEventDtoIn.getDescription())
-                .eventDate(LocalDateTime.parse(newEventDtoIn.getEventDate(),
+                .description(eventDtoIn.getDescription())
+                .eventDate(LocalDateTime.parse(eventDtoIn.getEventDate(),
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .location(location)
                 .initiator(user)
-                .paid(newEventDtoIn.getPaid())
-                .participantLimit(newEventDtoIn.getParticipantLimit())
-                .requestModeration(newEventDtoIn.getRequestModeration())
-                .title(newEventDtoIn.getTitle())
+                .paid(eventDtoIn.getPaid())
+                .participantLimit(eventDtoIn.getParticipantLimit())
+                .requestModeration(eventDtoIn.getRequestModeration())
+                .title(eventDtoIn.getTitle())
+                .build();
+    }
+
+    public static Event toEvent(UpdateEventUserRequestIn eventDtoIn, Category category, Location location, User user) {
+        return Event.builder()
+                .annotation(eventDtoIn.getAnnotation())
+                .category(category)
+                .description(eventDtoIn.getDescription())
+                .eventDate(eventDtoIn.getEventDate() != null ? LocalDateTime.parse(eventDtoIn.getEventDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null)
+                .location(location)
+                .initiator(user)
+                .paid(eventDtoIn.getPaid())
+                .participantLimit(eventDtoIn.getParticipantLimit())
+                .requestModeration(eventDtoIn.getRequestModeration())
+                .title(eventDtoIn.getTitle())
+                .build();
+    }
+
+    public static Event toEvent(UpdateEventAdminRequestIn eventDtoIn, Category category, Location location, User user) {
+        return Event.builder()
+                .annotation(eventDtoIn.getAnnotation())
+                .category(category)
+                .description(eventDtoIn.getDescription())
+                .eventDate(eventDtoIn.getEventDate() != null ? LocalDateTime.parse(eventDtoIn.getEventDate(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null)
+                .location(location)
+                .initiator(user)
+                .paid(eventDtoIn.getPaid())
+                .participantLimit(eventDtoIn.getParticipantLimit())
+                .requestModeration(eventDtoIn.getRequestModeration())
+                .title(eventDtoIn.getTitle())
                 .build();
     }
 }

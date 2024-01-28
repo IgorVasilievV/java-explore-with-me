@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explore.model.event.Event;
+import ru.practicum.explore.model.event.dto.EventShortDtoOut;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompilationDtoOut {
-    private List<Event> events;
+    private List<EventShortDtoOut> events;
     private Long id;
     private Boolean pinned;
     private String title;

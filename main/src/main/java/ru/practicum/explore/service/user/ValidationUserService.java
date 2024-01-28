@@ -23,4 +23,5 @@ public class ValidationUserService {
             throw new NotFoundException("User with id=" + id + " not found");
         }
     }
+
 }

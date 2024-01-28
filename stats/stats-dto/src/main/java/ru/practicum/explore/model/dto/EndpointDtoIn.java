@@ -1,4 +1,4 @@
-package ru.practicum.explore.dto;
+package ru.practicum.explore.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppDtoOut {
+public class EndpointDtoIn {
+
     private String app;
 
     private String uri;
 
-    private int hits;
+    private String ip;
+
+    private String timestamp;
 }

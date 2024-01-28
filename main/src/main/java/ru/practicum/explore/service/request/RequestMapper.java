@@ -5,7 +5,7 @@ import ru.practicum.explore.model.participationRequest.dto.ParticipationRequestD
 
 import java.time.format.DateTimeFormatter;
 
-public class ParticipationRequestMapper {
+public class RequestMapper {
     public static ParticipationRequestDtoOut toParticipationRequestDtoOut(ParticipationRequest participationRequest) {
         return ParticipationRequestDtoOut.builder()
                 .id(participationRequest.getId())

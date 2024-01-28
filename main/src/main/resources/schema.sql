@@ -3,13 +3,13 @@ DROP TABLE IF EXISTS locations, users, categories, compilations, events, partici
 CREATE TABLE IF NOT EXISTS locations (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 lat FLOAT,
-uri FLOAT
+lon FLOAT
 );
 
 CREATE TABLE IF NOT EXISTS users (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-email VARCHAR(50),
-name VARCHAR(50),
+email VARCHAR(254),
+name VARCHAR(250),
 
 CONSTRAINT uq_user_email UNIQUE (email)
 );
@@ -24,25 +24,28 @@ CONSTRAINT uq_category_name UNIQUE (name)
 CREATE TABLE IF NOT EXISTS compilations (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 title VARCHAR(50),
-is_pinned BOOLEAN
+is_pinned BOOLEAN,
+
+CONSTRAINT uq_title UNIQUE (title)
 );
 
 CREATE TABLE IF NOT EXISTS events (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-annotation VARCHAR(300),
+annotation VARCHAR(2000),
 category_id BIGINT,
 confirmed_requests INT,
 created_on TIMESTAMP,
-description VARCHAR(500),
+description VARCHAR(7000),
 event_date TIMESTAMP,
 initiator_id BIGINT,
 location_id BIGINT,
-is_paid BOOLEAN,
-participant_limit INT,
+is_paid BOOLEAN DEFAULT FALSE,
+participant_limit INT DEFAULT 0,
 published_on TIMESTAMP,
-is_request_moderation BOOLEAN,
+is_request_moderation BOOLEAN DEFAULT TRUE,
 state VARCHAR(20),
-title VARCHAR(50),
+title VARCHAR(120),
+views INT,
 compilation_id BIGINT,
 
 CONSTRAINT fk_events_to_categories FOREIGN KEY(category_id) REFERENCES categories(id),

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.category.dto.CategoryDtoIn;
 import ru.practicum.explore.model.category.dto.CategoryDtoOut;
@@ -17,17 +18,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class CategoryService {
 
     private final CategoryStorage categoryStorage;
     private final ValidationCategoryService validationCategoryService;
 
+    @Transactional
     public CategoryDtoOut addCategory(CategoryDtoIn categoryDtoIn) {
         Category categoryFromDb = categoryStorage.save(CategoryMapper.toCategory(categoryDtoIn));
         log.info("add new category with id=" + categoryFromDb.getId());
         return CategoryMapper.toCategoryDtoOut(categoryFromDb);
     }
 
+    @Transactional
     public CategoryDtoOut patchCategory(Long catId, CategoryDtoIn categoryDtoIn) {
         validationCategoryService.validateId(catId);
         Category categoryToDb = CategoryMapper.toCategory(categoryDtoIn);
@@ -37,6 +41,7 @@ public class CategoryService {
         return CategoryMapper.toCategoryDtoOut(categoryFromDb);
     }
 
+    @Transactional
     public void deleteCategory(Long catId) {
         validationCategoryService.validateBeforeDelete(catId);
         categoryStorage.deleteById(catId);

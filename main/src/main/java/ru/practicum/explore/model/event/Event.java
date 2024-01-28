@@ -68,6 +68,9 @@ public class Event {
     @Column(name = "title")
     private String title;
 
+    @Column(name = "views")
+    private Integer views;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "compilation_id")
     private Compilation compilation;
