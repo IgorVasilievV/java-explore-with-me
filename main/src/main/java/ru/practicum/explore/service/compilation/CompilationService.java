@@ -39,10 +39,7 @@ public class CompilationService {
         List<Long> eventIds = compilationDtoIn.getEvents();
         List<Event> events = new ArrayList<>();
         if (eventIds != null) {
-            events = eventIds.stream()
-                    .map((eventId) -> eventStorage.findById(eventId).get())
-                    .collect(Collectors.toList());
-
+            events = eventStorage.findAllByIdIn(eventIds);
             events.forEach((event) -> {
                 event.setCompilation(compilation);
                 eventStorage.save(event);
@@ -59,11 +56,6 @@ public class CompilationService {
     @Transactional
     public void deleteCompilation(Long compId) {
         validateCompilationService.validateBeforeDelete(compId);
-        List<Event> events = eventStorage.findAllByCompilationId(compId);
-        for (Event event : events) {
-            event.setCompilation(null);
-            eventStorage.save(event);
-        }
         compilationStorage.deleteById(compId);
 
         log.info("delete compilation with id=" + compId);
@@ -121,12 +113,7 @@ public class CompilationService {
 
         Sort sort = Sort.by(("id")).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        Page<Compilation> compilationsPage;
-        if (pinned != null) {
-            compilationsPage = compilationStorage.findAllByPinned(pinned, pageRequest);
-        } else {
-            compilationsPage = compilationStorage.findAll(pageRequest);
-        }
+        Page<Compilation> compilationsPage = compilationStorage.findAllCompilations(pinned, pageRequest);
         List<CompilationDtoOut> compilationDtoOuts = new ArrayList<>();
         if (!compilationsPage.isEmpty()) {
             for (Compilation compilation : compilationsPage) {

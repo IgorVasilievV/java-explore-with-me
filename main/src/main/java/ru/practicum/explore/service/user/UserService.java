@@ -12,7 +12,7 @@ import ru.practicum.explore.model.user.dto.UserDtoIn;
 import ru.practicum.explore.model.user.dto.UserDtoOut;
 import ru.practicum.explore.storage.user.UserStorage;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +33,13 @@ public class UserService {
 
     public List<UserDtoOut> getUsers(Long[] ids, Integer from, Integer size) {
         validationUserService.validatePagination(from, size);
-        if (ids == null) {
-            List<Long> idsFromDb = userStorage.findAllIds();
-            ids = new Long[idsFromDb.size()];
-            ids = idsFromDb.toArray(ids);
-        }
         Sort sort = Sort.by(("id")).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        Page<User> usersPage = userStorage.findAllByIdIn(ids, pageRequest);
+        List<Long> idsList = null;
+        if (ids != null) {
+            idsList = Arrays.asList(ids);
+        }
+        Page<User> usersPage = userStorage.findAllByIdIn(idsList, pageRequest);
         log.info("get users");
         return usersPage.stream()
                 .map(UserMapper::toUserDtoOut)

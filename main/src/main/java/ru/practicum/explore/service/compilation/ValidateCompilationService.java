@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.model.compilation.dto.NewCompilationDtoIn;
 import ru.practicum.explore.model.compilation.dto.UpdateCompilationRequestIn;
+import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.exception.NotFoundException;
 import ru.practicum.explore.model.exception.ValidationException;
 import ru.practicum.explore.storage.compilation.CompilationStorage;
@@ -24,9 +25,9 @@ public class ValidateCompilationService {
 
     private void validateEventIds(List<Long> eventIds) {
         if (eventIds != null && !eventIds.isEmpty()) {
-            for (Long eventId : eventIds) {
-                eventStorage.findById(eventId)
-                        .orElseThrow(() -> new NotFoundException("Not found event with id = " + eventId));
+            List<Event> events = eventStorage.findAllByIdIn(eventIds);
+            if (events.size() != eventIds.size()) {
+                throw new NotFoundException("Not found all events for compilation.");
             }
         }
     }
