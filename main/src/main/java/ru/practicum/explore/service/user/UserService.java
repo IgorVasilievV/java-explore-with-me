@@ -31,15 +31,11 @@ public class UserService {
         return UserMapper.toUserDtoOut(userFromDb);
     }
 
-    public List<UserDtoOut> getUsers(Long[] ids, Integer from, Integer size) {
+    public List<UserDtoOut> getUsers(List<Long> ids, Integer from, Integer size) {
         validationUserService.validatePagination(from, size);
         Sort sort = Sort.by(("id")).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        List<Long> idsList = null;
-        if (ids != null) {
-            idsList = Arrays.asList(ids);
-        }
-        Page<User> usersPage = userStorage.findAllByIdIn(idsList, pageRequest);
+        Page<User> usersPage = userStorage.findAllByIdIn(ids, pageRequest);
         log.info("get users");
         return usersPage.stream()
                 .map(UserMapper::toUserDtoOut)

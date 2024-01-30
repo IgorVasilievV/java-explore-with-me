@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -199,9 +198,9 @@ public class EventService {
                 .build();
     }
 
-    public List<EventFullDtoOut> getEventsByAdmin(Long[] users,
-                                                  String[] states,
-                                                  Long[] categories,
+    public List<EventFullDtoOut> getEventsByAdmin(List<Long> users,
+                                                  List<String> states,
+                                                  List<Long> categories,
                                                   String rangeStart,
                                                   String rangeEnd,
                                                   Integer from,
@@ -210,9 +209,9 @@ public class EventService {
         validationEventService.validateRangeStartAndRangeEndEvent(rangeStart, rangeEnd);
         Sort sort = Sort.by(("id")).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        Page<Event> events = eventStorage.findEventsByAdminSearch(users != null ? Arrays.asList(users) : null,
-                states != null ? Arrays.asList(states) : null,
-                categories != null ? Arrays.asList(categories) : null,
+        Page<Event> events = eventStorage.findEventsByAdminSearch(users,
+                states,
+                categories,
                 rangeStart != null ?
                         LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null,
                 rangeEnd != null ?
@@ -266,7 +265,7 @@ public class EventService {
 
     @Transactional
     public List<EventShortDtoOut> getEventsByPublicSearch(String text,
-                                                          Long[] categories,
+                                                          List<Long> categories,
                                                           Boolean paid,
                                                           String rangeStart,
                                                           String rangeEnd,
@@ -301,7 +300,7 @@ public class EventService {
         Page<Event> eventsFromDb = eventStorage.findEventsByPublicSearch(
                 State.PUBLISHED.toString(),
                 text,
-                categories != null ? Arrays.asList(categories) : null,
+                categories,
                 paid,
                 rangeStart != null ?
                         LocalDateTime.parse(rangeStart, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null,

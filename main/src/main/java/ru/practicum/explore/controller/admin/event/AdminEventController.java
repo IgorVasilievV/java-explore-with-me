@@ -19,9 +19,9 @@ public class AdminEventController {
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public List<EventFullDtoOut> getEventsByAdmin(@RequestParam(required = false) Long[] users,
-                                                  @RequestParam(required = false) String[] states,
-                                                  @RequestParam(required = false) Long[] categories,
+    public List<EventFullDtoOut> getEventsByAdmin(@RequestParam(required = false) List<Long> users,
+                                                  @RequestParam(required = false) List<String> states,
+                                                  @RequestParam(required = false) List<Long> categories,
                                                   @RequestParam(required = false) String rangeStart,
                                                   @RequestParam(required = false) String rangeEnd,
                                                   @RequestParam(required = false, defaultValue = "0") Integer from,

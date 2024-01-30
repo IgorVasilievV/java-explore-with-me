@@ -20,7 +20,7 @@ public class PublicEventController {
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
     public List<EventShortDtoOut> getEvents(@RequestParam(required = false) String text,
-                                            @RequestParam(required = false) Long[] categories,
+                                            @RequestParam(required = false) List<Long> categories,
                                             @RequestParam(required = false) Boolean paid,
                                             @RequestParam(required = false) String rangeStart,
                                             @RequestParam(required = false) String rangeEnd,

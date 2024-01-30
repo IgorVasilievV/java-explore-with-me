@@ -33,7 +33,6 @@ public class CompilationService {
 
     @Transactional
     public CompilationDtoOut addCompilation(NewCompilationDtoIn compilationDtoIn) {
-        validateCompilationService.validateBeforeAdd(compilationDtoIn);
         Compilation compilation = compilationStorage.save(CompilationMapper.toCompilation(compilationDtoIn));
 
         List<Long> eventIds = compilationDtoIn.getEvents();
@@ -64,7 +63,7 @@ public class CompilationService {
 
     @Transactional
     public CompilationDtoOut patchCompilation(Long compId, UpdateCompilationRequestIn compilationDtoIn) {
-        validateCompilationService.validateBeforeUpdate(compId, compilationDtoIn);
+        validateCompilationService.validateBeforeUpdate(compId);
 
         Optional<Compilation> compilationOptional = Optional.of(CompilationMapper.toCompilation(compilationDtoIn));
         Compilation compilationToUpdate = compilationStorage.findById(compId).get();
@@ -83,9 +82,7 @@ public class CompilationService {
         if (eventIdsNew == null) {
             eventIdsNew = new ArrayList<>();
         }
-        List<Event> eventsNew = eventIdsNew.stream()
-                .map((id) -> eventStorage.findById(id).get())
-                .collect(Collectors.toList());
+        List<Event> eventsNew = eventStorage.findAllByIdIn(eventIdsNew);
 
         for (Event event : eventsOld) {
             if (!eventIdsNew.contains(event.getId())) {
