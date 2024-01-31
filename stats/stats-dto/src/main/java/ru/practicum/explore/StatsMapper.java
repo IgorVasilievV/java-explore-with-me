@@ -1,7 +1,7 @@
 package ru.practicum.explore;
 
-import ru.practicum.explore.dto.AppDtoOut;
-import ru.practicum.explore.dto.EndpointDtoIn;
+import ru.practicum.explore.model.dto.AppDtoOut;
+import ru.practicum.explore.model.dto.EndpointDtoIn;
 import ru.practicum.explore.model.App;
 import ru.practicum.explore.model.Endpoint;
 

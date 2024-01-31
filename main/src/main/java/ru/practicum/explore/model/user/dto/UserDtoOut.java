@@ -1,4 +1,4 @@
-package ru.practicum.explore.dto;
+package ru.practicum.explore.model.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppDtoOut {
-    private String app;
-
-    private String uri;
-
-    private int hits;
+public class UserDtoOut {
+    private Long id;
+    private String name;
+    private String email;
 }

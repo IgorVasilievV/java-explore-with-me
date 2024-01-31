@@ -1,11 +1,12 @@
 package ru.practicum.explore.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.StatsMapper;
-import ru.practicum.explore.dto.AppDtoOut;
-import ru.practicum.explore.dto.EndpointDtoIn;
+import ru.practicum.explore.model.dto.AppDtoOut;
+import ru.practicum.explore.model.dto.EndpointDtoIn;
 import ru.practicum.explore.model.App;
 import ru.practicum.explore.model.Endpoint;
 import ru.practicum.explore.storage.AppDbStorage;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class StatsService {
 
     private final EndpointDbStorage endpointDbStorage;
     private final AppDbStorage appDbStorage;
+    private final ValidationService validationService;
 
     @Transactional
     public void addStats(EndpointDtoIn endpointDtoIn) {
@@ -44,9 +47,12 @@ public class StatsService {
         Endpoint endpointToDb = StatsMapper.toEndpoint(endpointDtoIn, appFromDb);
 
         endpointDbStorage.save(endpointToDb);
+
+        log.info("added stats by endpoint");
     }
 
     public AppDtoOut[] getStats(String start, String end, String[] uris, Boolean unique) {
+        validationService.validateRangeDate(start, end);
         LocalDateTime startDate = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         LocalDateTime endDate = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
@@ -61,24 +67,32 @@ public class StatsService {
             urisActual = urisList.toArray(urisActual);
         }
 
-        for (String uri : urisActual) {
-            List<Endpoint> endpoints = endpointDbStorage
-                    .findAllByApp_uriAndCreatedBetween(uri, startDate, endDate);
-            AppDtoOut appDtoOut;
-            if (unique) {
-                List<String> uniqueIp = endpoints.stream()
-                        .map(Endpoint::getIp)
-                        .distinct()
-                        .collect(Collectors.toList());
-                appDtoOut = StatsMapper.toAppDtoOut(endpoints.get(0).getApp(), uniqueIp.size());
-            } else {
-                appDtoOut = StatsMapper.toAppDtoOut(endpoints.get(0).getApp(), endpoints.size());
+        if (urisActual.length != 0) {
+            for (String uri : urisActual) {
+                List<Endpoint> endpoints = endpointDbStorage
+                        .findAllByApp_uriAndCreatedBetween(uri, startDate, endDate);
+                if (!endpoints.isEmpty()) {
+                    AppDtoOut appDtoOut;
+                    if (unique) {
+                        List<String> uniqueIp = endpoints.stream()
+                                .map(Endpoint::getIp)
+                                .distinct()
+                                .collect(Collectors.toList());
+                        appDtoOut = StatsMapper.toAppDtoOut(endpoints.get(0).getApp(), uniqueIp.size());
+                    } else {
+                        appDtoOut = StatsMapper.toAppDtoOut(endpoints.get(0).getApp(), endpoints.size());
+                    }
+                    appDtoOuts.add(appDtoOut);
+                }
             }
-            appDtoOuts.add(appDtoOut);
+            appDtoOuts.sort(Comparator.comparing(AppDtoOut::getHits).reversed());
+            AppDtoOut[] appDtoOutsArray = new AppDtoOut[appDtoOuts.size()];
+            appDtoOutsArray = appDtoOuts.toArray(appDtoOutsArray);
+            log.info("got stats");
+            return appDtoOutsArray;
+        } else {
+            log.info("got empty stats");
+            return new AppDtoOut[0];
         }
-        appDtoOuts.sort(Comparator.comparing(AppDtoOut::getHits).reversed());
-        AppDtoOut[] appDtoOutsArray = new AppDtoOut[appDtoOuts.size()];
-        appDtoOutsArray = appDtoOuts.toArray(appDtoOutsArray);
-        return appDtoOutsArray;
     }
 }
