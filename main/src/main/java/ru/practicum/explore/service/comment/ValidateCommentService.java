@@ -40,10 +40,6 @@ public class ValidateCommentService {
     public void validateBeforeUpdate(Long userId, Long eventId, Long commentId) {
         validateEventId(eventId);
         validateCommentId(commentId);
-        validateUserIdBeforeUpdate(userId, commentId);
-    }
-
-    private void validateUserIdBeforeUpdate(Long userId, Long commentId) {
         validateUserId(userId);
         if (userId != commentStorage.findById(commentId).get().getInitiator().getId()) {
             throw new ValidationException("Comment can't be updated by not initiator.");
@@ -65,10 +61,6 @@ public class ValidateCommentService {
     public void validateBeforeDeleted(Long userId, Long eventId, Long commentId) {
         validateEventId(eventId);
         validateCommentId(commentId);
-        validateUserIdBeforeDelete(userId, commentId);
-    }
-
-    private void validateUserIdBeforeDelete(Long userId, Long commentId) {
         validateUserId(userId);
         Long idOwnerComment = commentStorage.findById(commentId).get().getInitiator().getId();
         Long idOwnerEvent = commentStorage.findById(commentId).get().getEvent().getInitiator().getId();
