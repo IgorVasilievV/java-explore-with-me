@@ -50,7 +50,9 @@ public interface EventStorage extends JpaRepository<Event, Long> {
                                          @Param("dateNow") LocalDateTime dateNow,
                                          PageRequest pageRequest);
 
-    List<Event> findAllByIdAndState(Long id, String string);
+    List<Event> findAllByIdAndState(Long id, String state);
 
     List<Event> findAllByIdIn(List<Long> eventIds);
+
+    Event findByIdAndState(Long id, String string);
 }

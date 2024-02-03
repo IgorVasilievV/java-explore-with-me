@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.model.event.dto.EventFullDtoOut;
+import ru.practicum.explore.model.event.dto.EventFullDtoWithCommentsOut;
 import ru.practicum.explore.model.event.dto.EventShortDtoOut;
 import ru.practicum.explore.service.event.EventService;
 
@@ -38,5 +39,11 @@ public class PublicEventController {
     public EventFullDtoOut getEventById(@PathVariable Long id,
                                         HttpServletRequest request) {
         return eventService.getEventById(id, request);
+    }
+
+    @GetMapping("/{id}/comments")
+    @ResponseStatus(value = HttpStatus.OK)
+    public EventFullDtoWithCommentsOut getEventByIdWithComments(@PathVariable Long id) {
+        return eventService.getEventByIdWithComment(id);
     }
 }

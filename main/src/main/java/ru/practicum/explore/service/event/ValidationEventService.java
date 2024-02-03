@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -194,7 +195,7 @@ public class ValidationEventService {
     }
 
     public void validatePublishedEventId(Long id) {
-        if (eventStorage.findAllByIdAndState(id, State.PUBLISHED.toString()).isEmpty()) {
+        if (Optional.ofNullable(eventStorage.findByIdAndState(id, State.PUBLISHED.toString())).isEmpty()) {
             throw new NotFoundException("Event with id=" + id + " not found");
         }
     }

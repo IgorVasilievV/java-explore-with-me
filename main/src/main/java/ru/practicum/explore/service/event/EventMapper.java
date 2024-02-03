@@ -6,10 +6,13 @@ import ru.practicum.explore.model.event.dto.*;
 import ru.practicum.explore.model.location.Location;
 import ru.practicum.explore.model.user.User;
 import ru.practicum.explore.service.category.CategoryMapper;
+import ru.practicum.explore.service.comment.CommentMapper;
 import ru.practicum.explore.service.user.UserMapper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class EventMapper {
     public static EventFullDtoOut toEventFullDto(Event event) {
@@ -31,6 +34,31 @@ public class EventMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(event.getViews())
+                .build();
+    }
+
+    public static EventFullDtoWithCommentsOut toEventFullWithCommentsDto(Event event) {
+        return EventFullDtoWithCommentsOut.builder()
+                .annotation(event.getAnnotation())
+                .category(CategoryMapper.toCategoryDtoOut(event.getCategory()))
+                .confirmedRequests(event.getConfirmedRequests())
+                .createdOn(event.getCreatedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .description(event.getDescription())
+                .eventDate(event.getEventDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .id(event.getId())
+                .initiator(UserMapper.toUserDtoShortOut(event.getInitiator()))
+                .location(LocationMapper.toLocationDto(event.getLocation()))
+                .paid(event.getPaid())
+                .participantLimit(event.getParticipantLimit())
+                .publishedOn(event.getPublishedOn() != null ?
+                        event.getPublishedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null)
+                .requestModeration(event.getRequestModeration())
+                .state(event.getState())
+                .title(event.getTitle())
+                .views(event.getViews())
+                .comments(event.getComments() != null ? event.getComments().stream()
+                        .map(CommentMapper::toCommentDtoOut)
+                        .collect(Collectors.toList()) : Collections.EMPTY_LIST)
                 .build();
     }
 

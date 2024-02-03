@@ -374,4 +374,14 @@ public class EventService {
 
         return EventMapper.toEventFullDto(events.get(0));
     }
+
+    public EventFullDtoWithCommentsOut getEventByIdWithComment(Long id) {
+        validationEventService.validatePublishedEventId(id);
+
+        Event event = eventStorage.findByIdAndState(id, State.PUBLISHED.toString());
+
+        log.info("get event with comments by id public search");
+
+        return EventMapper.toEventFullWithCommentsDto(event);
+    }
 }

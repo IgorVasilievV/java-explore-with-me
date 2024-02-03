@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS locations, users, categories, compilations, events, participation_requests CASCADE;
+DROP TABLE IF EXISTS locations, users, categories, compilations, events, participation_requests, comments CASCADE;
 
 CREATE TABLE IF NOT EXISTS locations (
 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -63,4 +63,15 @@ status VARCHAR(20),
 
 CONSTRAINT fk_participation_requests_to_events FOREIGN KEY(event_id) REFERENCES events(id),
 CONSTRAINT fk_participation_requests_to_users FOREIGN KEY(requester_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+published_on TIMESTAMP,
+event_id BIGINT,
+initiator_id BIGINT,
+text VARCHAR(1000),
+
+CONSTRAINT fk_comments_to_events FOREIGN KEY(event_id) REFERENCES events(id),
+CONSTRAINT fk_comments_to_users FOREIGN KEY(initiator_id) REFERENCES users(id)
 );

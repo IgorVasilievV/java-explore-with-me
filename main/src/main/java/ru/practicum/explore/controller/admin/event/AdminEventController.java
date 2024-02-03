@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.model.event.dto.EventFullDtoOut;
 import ru.practicum.explore.model.event.dto.UpdateEventAdminRequestIn;
+import ru.practicum.explore.service.comment.CommentService;
 import ru.practicum.explore.service.event.EventService;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import java.util.List;
 public class AdminEventController {
 
     private final EventService eventService;
+    private final CommentService commentService;
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
@@ -34,6 +36,12 @@ public class AdminEventController {
     public EventFullDtoOut patchEventByAdmin(@PathVariable Long eventId,
                                              @Valid @RequestBody UpdateEventAdminRequestIn eventDtoIn) {
         return eventService.patchEventByAdmin(eventId, eventDtoIn);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteCommentByAdmin(@PathVariable Long commentId) {
+        commentService.deleteCommentByAdmin(commentId);
     }
 
 }

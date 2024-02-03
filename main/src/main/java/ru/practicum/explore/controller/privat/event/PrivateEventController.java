@@ -3,6 +3,8 @@ package ru.practicum.explore.controller.privat.event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explore.model.comment.dto.CommentDtoIn;
+import ru.practicum.explore.model.comment.dto.CommentDtoOut;
 import ru.practicum.explore.model.event.dto.EventFullDtoOut;
 import ru.practicum.explore.model.event.dto.EventShortDtoOut;
 import ru.practicum.explore.model.event.dto.NewEventDtoIn;
@@ -10,6 +12,7 @@ import ru.practicum.explore.model.event.dto.UpdateEventUserRequestIn;
 import ru.practicum.explore.model.participationRequest.dto.EventRequestStatusUpdateRequestIn;
 import ru.practicum.explore.model.participationRequest.dto.EventRequestStatusUpdateResultOut;
 import ru.practicum.explore.model.participationRequest.dto.ParticipationRequestDtoOut;
+import ru.practicum.explore.service.comment.CommentService;
 import ru.practicum.explore.service.event.EventService;
 
 import javax.validation.Valid;
@@ -21,6 +24,7 @@ import java.util.List;
 public class PrivateEventController {
 
     private final EventService eventService;
+    private final CommentService commentService;
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -66,5 +70,45 @@ public class PrivateEventController {
                                                                 @Valid @RequestBody EventRequestStatusUpdateRequestIn
                                                                         requestStatusUpdate) {
         return eventService.patchRequestStatus(userId, eventId, requestStatusUpdate);
+    }
+
+    @PostMapping("/{eventId}/comments")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public CommentDtoOut addComment(@PathVariable Long userId,
+                                    @PathVariable Long eventId,
+                                    @Valid @RequestBody CommentDtoIn commentDtoIn) {
+        return commentService.addComment(userId, eventId, commentDtoIn);
+    }
+
+    @PatchMapping("/{eventId}/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public CommentDtoOut updateComment(@PathVariable Long userId,
+                                       @PathVariable Long eventId,
+                                       @PathVariable Long commentId,
+                                       @Valid @RequestBody CommentDtoIn commentDtoIn) {
+        return commentService.updateComment(userId, eventId, commentId, commentDtoIn);
+    }
+
+    @DeleteMapping("/{eventId}/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable Long userId,
+                              @PathVariable Long eventId,
+                              @PathVariable Long commentId) {
+        commentService.deleteComment(userId, eventId, commentId);
+    }
+
+    @GetMapping("/{eventId}/comments/{commentId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public CommentDtoOut getComment(@PathVariable Long userId,
+                                    @PathVariable Long eventId,
+                                    @PathVariable Long commentId) {
+        return commentService.getCommentById(userId, eventId, commentId);
+    }
+
+    @GetMapping("/{eventId}/comments")
+    @ResponseStatus(value = HttpStatus.OK)
+    public List<CommentDtoOut> getCommentsByEventId(@PathVariable Long userId,
+                                                    @PathVariable Long eventId) {
+        return commentService.getCommentsByEventId(userId, eventId);
     }
 }

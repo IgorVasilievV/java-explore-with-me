@@ -12,6 +12,7 @@ import ru.practicum.explore.model.compilation.dto.NewCompilationDtoIn;
 import ru.practicum.explore.model.compilation.dto.CompilationDtoOut;
 import ru.practicum.explore.model.compilation.dto.UpdateCompilationRequestIn;
 import ru.practicum.explore.model.event.Event;
+import ru.practicum.explore.model.event.dto.EventShortDtoOut;
 import ru.practicum.explore.service.event.EventMapper;
 import ru.practicum.explore.storage.compilation.CompilationStorage;
 import ru.practicum.explore.storage.event.EventStorage;
@@ -114,14 +115,10 @@ public class CompilationService {
         List<CompilationDtoOut> compilationDtoOuts = new ArrayList<>();
         if (!compilationsPage.isEmpty()) {
             for (Compilation compilation : compilationsPage) {
-                List<Event> events = eventStorage.findAllByCompilationId(compilation.getId());
-                CompilationDtoOut compilationDtoOut = CompilationMapper.toCompilationDtoOut(compilation,
-                        !events.isEmpty() ?
-                                events.stream()
-                                        .map(EventMapper::toEventShortDto)
-                                        .collect(Collectors.toList()) :
-                                new ArrayList<>());
-                compilationDtoOuts.add(compilationDtoOut);
+                List<EventShortDtoOut> eventShortDtoOuts = compilation.getEvents().stream()
+                        .map(EventMapper::toEventShortDto)
+                        .collect(Collectors.toList());
+                compilationDtoOuts.add(CompilationMapper.toCompilationDtoOut(compilation, eventShortDtoOuts));
             }
         }
 
