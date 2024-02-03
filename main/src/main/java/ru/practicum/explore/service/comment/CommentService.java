@@ -28,11 +28,11 @@ public class CommentService {
     private final CommentStorage commentStorage;
     private final EventStorage eventStorage;
     private final UserStorage userStorage;
-    private final ValidationCommentService validationCommentService;
+    private final ValidateCommentService validateCommentService;
 
     @Transactional
     public CommentDtoOut addComment(Long userId, Long eventId, CommentDtoIn commentDtoIn) {
-        validationCommentService.validateBeforeAdded(userId, eventId);
+        validateCommentService.validateBeforeAdd(userId, eventId);
 
         Event event = eventStorage.findById(eventId).get();
         User initiator = userStorage.findById(userId).get();
@@ -47,7 +47,7 @@ public class CommentService {
 
     @Transactional
     public CommentDtoOut updateComment(Long userId, Long eventId, Long commentId, CommentDtoIn commentDtoIn) {
-        validationCommentService.validateBeforeUpdated(userId, eventId, commentId);
+        validateCommentService.validateBeforeUpdate(userId, eventId, commentId);
 
         Comment commentToUpdated = commentStorage.findById(commentId).get();
         LocalDateTime publishedOn = LocalDateTime.now();
@@ -62,7 +62,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long userId, Long eventId, Long commentId) {
-        validationCommentService.validateBeforeDeleted(userId, eventId, commentId);
+        validateCommentService.validateBeforeDeleted(userId, eventId, commentId);
 
         commentStorage.deleteById(commentId);
 
@@ -71,7 +71,7 @@ public class CommentService {
 
     @Transactional
     public void deleteCommentByAdmin(Long commentId) {
-        validationCommentService.validateCommentId(commentId);
+        validateCommentService.validateCommentId(commentId);
 
         commentStorage.deleteById(commentId);
 
@@ -79,7 +79,7 @@ public class CommentService {
     }
 
     public CommentDtoOut getCommentById(Long userId, Long eventId, Long commentId) {
-        validationCommentService.validateBeforeGetByCommentId(userId, eventId, commentId);
+        validateCommentService.validateGetByCommentId(userId, eventId, commentId);
 
         Comment comment = commentStorage.findById(commentId).get();
 
@@ -88,7 +88,7 @@ public class CommentService {
     }
 
     public List<CommentDtoOut> getCommentsByEventId(Long userId, Long eventId) {
-        validationCommentService.validateBeforeGetByEventId(userId, eventId);
+        validateCommentService.validateGetByEventId(userId, eventId);
 
         List<Sort.Order> orders = new ArrayList<>();
         Sort.Order orderPublishOn = new Sort.Order(Sort.Direction.DESC, "publishedOn");

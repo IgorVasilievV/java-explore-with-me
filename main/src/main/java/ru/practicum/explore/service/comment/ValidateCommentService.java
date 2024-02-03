@@ -12,18 +12,18 @@ import ru.practicum.explore.storage.user.UserStorage;
 
 @Service
 @RequiredArgsConstructor
-public class ValidationCommentService {
+public class ValidateCommentService {
 
     private final EventStorage eventStorage;
     private final UserStorage userStorage;
     private final CommentStorage commentStorage;
 
-    public void validateBeforeAdded(Long userId, Long eventId) {
+    public void validateBeforeAdd(Long userId, Long eventId) {
         validateUserId(userId);
-        validateEventIdBeforeAddComment(eventId);
+        validateEventIdBeforeAdd(eventId);
     }
 
-    private void validateEventIdBeforeAddComment(Long eventId) {
+    private void validateEventIdBeforeAdd(Long eventId) {
         validateEventId(eventId);
         Event event = eventStorage.findById(eventId).get();
         if (!State.PUBLISHED.toString().equals(event.getState())) {
@@ -37,13 +37,13 @@ public class ValidationCommentService {
         }
     }
 
-    public void validateBeforeUpdated(Long userId, Long eventId, Long commentId) {
+    public void validateBeforeUpdate(Long userId, Long eventId, Long commentId) {
         validateEventId(eventId);
         validateCommentId(commentId);
-        validateUserIdBeforeUpdateComment(userId, commentId);
+        validateUserIdBeforeUpdate(userId, commentId);
     }
 
-    private void validateUserIdBeforeUpdateComment(Long userId, Long commentId) {
+    private void validateUserIdBeforeUpdate(Long userId, Long commentId) {
         validateUserId(userId);
         if (userId != commentStorage.findById(commentId).get().getInitiator().getId()) {
             throw new ValidationException("Comment can't be updated by not initiator.");
@@ -65,10 +65,10 @@ public class ValidationCommentService {
     public void validateBeforeDeleted(Long userId, Long eventId, Long commentId) {
         validateEventId(eventId);
         validateCommentId(commentId);
-        validateUserIdBeforeDeleteComment(userId, commentId);
+        validateUserIdBeforeDelete(userId, commentId);
     }
 
-    private void validateUserIdBeforeDeleteComment(Long userId, Long commentId) {
+    private void validateUserIdBeforeDelete(Long userId, Long commentId) {
         validateUserId(userId);
         Long idOwnerComment = commentStorage.findById(commentId).get().getInitiator().getId();
         Long idOwnerEvent = commentStorage.findById(commentId).get().getEvent().getInitiator().getId();
@@ -77,13 +77,13 @@ public class ValidationCommentService {
         }
     }
 
-    public void validateBeforeGetByCommentId(Long userId, Long eventId, Long commentId) {
+    public void validateGetByCommentId(Long userId, Long eventId, Long commentId) {
         validateUserId(userId);
         validateEventId(eventId);
         validateCommentId(commentId);
     }
 
-    public void validateBeforeGetByEventId(Long userId, Long eventId) {
+    public void validateGetByEventId(Long userId, Long eventId) {
         validateUserId(userId);
         validateEventId(eventId);
     }
