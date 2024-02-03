@@ -194,7 +194,7 @@ public class ValidationEventService {
     }
 
     public void validatePublishedEventId(Long id) {
-        if (eventStorage.findAllByIdAndState(id, State.PUBLISHED.toString()).isEmpty()) {
+        if (eventStorage.findByIdAndState(id, State.PUBLISHED.toString()).isEmpty()) {
             throw new NotFoundException("Event with id=" + id + " not found");
         }
     }

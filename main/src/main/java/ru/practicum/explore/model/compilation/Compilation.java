@@ -1,8 +1,10 @@
 package ru.practicum.explore.model.compilation;
 
 import lombok.*;
+import ru.practicum.explore.model.event.Event;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +25,9 @@ public class Compilation {
 
     @Column(name = "title")
     private String title;
+
+    @OneToMany(mappedBy = "compilation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
 
     @Override
     public boolean equals(Object o) {

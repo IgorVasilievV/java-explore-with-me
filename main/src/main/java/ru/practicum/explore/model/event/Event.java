@@ -2,12 +2,14 @@ package ru.practicum.explore.model.event;
 
 import lombok.*;
 import ru.practicum.explore.model.category.Category;
+import ru.practicum.explore.model.comment.Comment;
 import ru.practicum.explore.model.compilation.Compilation;
 import ru.practicum.explore.model.location.Location;
 import ru.practicum.explore.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -74,6 +76,10 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "compilation_id")
     private Compilation compilation;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("publishedOn DESC")
+    private List<Comment> comments;
 
     @Override
     public boolean equals(Object o) {

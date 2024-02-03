@@ -9,6 +9,7 @@ import ru.practicum.explore.model.event.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventStorage extends JpaRepository<Event, Long> {
     Page<Event> findAllByInitiatorId(Long userId, PageRequest pageRequest);
@@ -50,7 +51,9 @@ public interface EventStorage extends JpaRepository<Event, Long> {
                                          @Param("dateNow") LocalDateTime dateNow,
                                          PageRequest pageRequest);
 
-    List<Event> findAllByIdAndState(Long id, String string);
+    List<Event> findAllByIdAndState(Long id, String state);
 
     List<Event> findAllByIdIn(List<Long> eventIds);
+
+    Optional<Event> findByIdAndState(Long id, String string);
 }
