@@ -378,7 +378,7 @@ public class EventService {
     public EventFullDtoWithCommentsOut getEventByIdWithComment(Long id) {
         validationEventService.validatePublishedEventId(id);
 
-        Event event = eventStorage.findByIdAndState(id, State.PUBLISHED.toString()).get();
+        Event event = eventStorage.findByIdAndState(id, State.PUBLISHED.toString());
 
         log.info("get event with comments by id public search");
 
